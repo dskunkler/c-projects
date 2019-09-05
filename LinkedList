@@ -1,0 +1,256 @@
+//ask about adding first value of 0
+
+#include <iostream>
+using std::cin;
+using std::cout;
+using std::endl;
+
+struct Node{
+	Node(float value, Node* thePtr):val(value),nextLink(thePtr){}
+	float val;
+	Node* nextLink;
+};
+class LinkList{
+	public:
+		LinkList():head(NULL){}
+		void add(float toAdd);
+		void display();
+		void findVal(float toFind);
+		Node* showNth(int n);
+		void delNth(int n);
+		void showStats();
+	private:
+		Node *head;
+};
+
+int main(){
+	int sel, n;
+	float userAdd, value;
+	LinkList list;
+	cout << "Make a selection:\n"
+	<< "1 - Add a value (a decimal number)\n"
+	<< "2 - Search for a value\n"
+	<< "3 - Find the nth value\n"
+	<< "4 - Delete the nth value\n"
+	<< "5 - Display list statistics (count, mean, median)\n"
+	<< "6 - Display the list\n"
+	<< "7 - Exit the program\n=>";
+	cin >> sel;
+	cout << endl;
+	while(sel != 7){
+		switch(sel){
+			case 1: 
+				cout << "Enter a value to add: \n";
+				cin >> userAdd;
+				list.add(userAdd);
+				break;
+			case 2:
+				cout << "Enter a value to search for: ";
+				cin >> value;
+				cout << endl;
+				list.findVal(value);
+				break;
+			case 3:
+				cout << "Enter the position number to find: ";
+				cin >> n;
+				cout << endl;
+				Node* theNth;
+				theNth = list.showNth(n);
+				if(theNth != NULL){		
+					cout << theNth->val;
+				}
+				break;
+			case 4:
+				cout << "Enter the position number to delete: ";
+				cin >> n;
+				cout << endl;
+				list.delNth(n);
+				break;
+			case 5:
+				list.showStats();
+				break;
+			case 6:
+				list.display();
+				break;
+			case 7:
+				//empty this selection exits the program
+				break;
+			default:
+				cout << "Improper selection.\n";
+			
+			
+			
+			
+			
+			
+			
+		}
+		cout << "Make a selection:\n"
+		<< "1 - Add a value (a decimal number)\n"
+		<< "2 - Search for a value\n"
+		<< "3 - Find the nth value\n"
+		<< "4 - Delete the nth value\n"
+		<< "5 - Display list statistics (count, mean, median)\n"
+		<< "6 - Display the list\n"
+		<< "7 - Exit the program\n=>";
+		cin >> sel;		
+		cout << endl;
+	}
+	cout <<"Goodbye!\n";
+	return 0;
+}
+
+void LinkList::add(float toAdd){
+	int counter;
+	if(head == NULL){
+		head =new Node(toAdd, NULL);
+	}
+	else if(head->val > toAdd){
+	  		head = new Node(toAdd, head);
+	}
+	else if(head->val < toAdd){
+		Node* finder = head;
+		while(finder->val < toAdd && finder->nextLink != NULL){
+			finder = finder->nextLink;
+			counter++;
+		}
+		if(toAdd > finder->val){
+			finder->nextLink = new Node(toAdd,NULL);
+		}
+		else{
+			Node* placer = head;
+			for(int i = 1; i < counter; i++){
+				placer = placer->nextLink;
+			}
+			placer->nextLink = new Node(toAdd, finder);
+			
+		}
+	}
+	
+	
+}
+
+void LinkList::display(){
+	if(head == NULL){
+		cout << "The list is empty.\n";
+	}
+	else{
+		Node* mover = head;
+		while(mover->nextLink != NULL){
+			cout << mover->val << endl;
+			mover= mover->nextLink;
+		}
+		cout << mover->val << endl;
+	}
+	cout << endl;
+	
+}
+
+void LinkList::findVal(float toFind){	
+	int counter = 1;
+	if(head == NULL){
+		cout << "This list is empty.\n\n";
+	}
+	else{
+		Node* finder = head;
+		while(finder->val != toFind && finder->nextLink!= NULL){
+			counter++;
+			finder = finder->nextLink;
+		} 
+		if(finder->val == toFind){
+			cout << "The value is at the " << counter << " position.\n\n";
+		}
+		else{
+			cout << "The value was not within the list.\n\n";
+		}
+	}
+	
+}
+
+Node* LinkList::showNth(int n){
+	int i = 1;
+	if(head == NULL){
+		cout << "The list is empty.\n\n";
+		return NULL;
+	}
+	else{
+		Node* finder = head;
+		while(i < n && finder->nextLink!= NULL){
+				i++;
+				finder = finder->nextLink;
+		}
+		if(i == n){
+			return finder;
+		}
+		else{
+			cout << "The list is not that long.\n\n";
+			return NULL;
+		}
+	}	
+}
+
+void LinkList::delNth(int n){
+	int i = 1;
+	if(head == NULL){
+		cout << "The list is empty.\n\n";
+	}
+	else if(n ==1 && head->nextLink == NULL){
+		head = NULL;
+	}
+	else{
+		Node* before = head;
+		while(i < n-1 && before->nextLink != NULL){
+				i++;
+				before = before->nextLink;
+		}
+		if(i == n-1 && before->nextLink!=NULL){
+			Node* discard = before;
+		//	cout <<"before val = "<< before->val << "discar val = " << discard->val<< endl;
+			discard = discard->nextLink;			
+		//	cout <<"before val = "<< before->val << "discar val = " << discard->val<< endl;
+			before->nextLink = discard->nextLink;			
+		//	cout <<"before val = "<< before->val << "discar val = " << discard->val<< endl;
+			delete discard;
+			
+		}
+		else{
+			cout << "The list is not that long.\n\n";
+		}
+	}		
+}
+
+void LinkList::showStats(){
+	float total, median;
+	int counter = 1, i = 1;
+	if(head == NULL){
+		cout << "The list is empty.\n\n";
+	}
+	else{	
+		Node* moving = head;
+		while(moving->nextLink != NULL){
+			counter++;
+			total+=moving->val;
+			moving = moving->nextLink;
+		}
+		total+=moving->val;
+		cout << "There are " << counter << " values.\n"
+		<< "The mean is " << total/counter << endl;
+		moving = head;
+		int n = counter - (counter/2);
+		while(i < n){
+			i++;
+			moving = moving->nextLink;
+		}
+		if(counter%2 == 1){
+			cout << "The median value is " << moving->val << endl << endl;
+		}
+		else{
+			median = moving->val;
+			moving = moving->nextLink;
+			median += moving->val;
+			median = median/2;
+			cout << "The median value is " << median << endl << endl;
+		}
+	}
+	
+}
