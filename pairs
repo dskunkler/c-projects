@@ -1,0 +1,380 @@
+#include <iostream>
+#include <cmath>
+#include <cstdlib>
+using namespace std;
+
+void cActions();
+int convert(char sel);
+void vActions();
+
+class Pairs{
+	public:
+		Pairs();
+		Pairs(float first, float second);
+		const Pairs operator +(const Pairs& secondary) const;
+		const Pairs operator-(const Pairs& secondary) const;
+		bool operator ==(const Pairs& rightSide);
+		void getPts()const;
+		
+	protected:
+		float a, b;
+	
+};
+
+class Complex : public Pairs{	
+	public:
+		Complex();
+		Complex(float first, float second);
+		const Complex operator *(const Complex& second) const;
+		const Complex operator /(const Complex& second) const;
+		friend istream& operator >>(istream& inputStream, Complex& number);
+		friend ostream& operator <<(ostream& outputStream, const Complex& number);
+		Complex& operator =(const Complex& rightSide);
+		Complex& operator =(const Pairs& rightSide);
+};
+
+class Vector: public Pairs{
+	public:
+		Vector();
+		Vector(float first, float second);
+		const float operator*(const Vector& second) const;
+		const Vector operator *(const float r) const;
+		friend istream& operator >> (istream& inputStream, Vector& number);
+		friend ostream& operator << (ostream& outputStream, const Vector& number);
+		Vector& operator =(const Vector& rightSide);
+		Vector& operator =(const Pairs& rightSide);
+};
+
+
+
+int main(){
+   int sel;
+   do {
+      cout << "Select an option - (1) perform complex number actions\n";
+      cout << "                   (2) perform vector actions\n";
+      cout << "                   (3) exit\n";
+      cin >> sel;
+      if(sel == 1)
+         cActions();
+      else if(sel == 2)
+         vActions();
+      else if (sel == 3)
+         cout << "Bye...\n";
+      else
+         cout << "Invalid input - try again\n";
+   } while (sel != 3);
+   char ch;
+    cin >> ch;
+  
+
+	
+	
+	std::cin.get();
+	return 0;
+}
+
+
+
+
+Pairs::Pairs(): a(0), b(0){
+}
+	
+Pairs::Pairs(float first, float second): a(first), b(second){
+}
+
+const Pairs Pairs::operator +(const Pairs& secondary) const{
+	return Pairs(a + secondary.a, b + secondary.b);
+}
+	
+const Pairs Pairs::operator -(const Pairs& secondary) const{
+	return Pairs(a - secondary.a, b - secondary.b);
+}
+	
+bool Pairs::operator ==(const Pairs& rightSide){
+	if(a == rightSide.a && b == rightSide.b){
+		return true;
+	}
+	else{
+		return false;
+	}
+}
+	
+void Pairs::getPts()const{
+	cout << a <<"," << b << endl;
+}
+	
+	
+Complex::Complex() : Pairs(){
+}
+	
+Complex::Complex(float first, float second): Pairs(first, second){
+}
+	
+const Complex Complex::operator *(const Complex& second) const{
+	Complex third;
+	third.a = a * second.a - b * second.b;
+	third.b = a * second.b + b * second.a;
+	return third;
+}
+
+const Complex Complex::operator /(const Complex& second) const{
+	Complex third;
+	third.a = (a * second.a + b * second.b)/(pow(second.a,2) + pow(second.b,2));
+	third.b = (b*second.a - a * second.b)/(pow(second.a,2) + pow(second.b,2));
+	return third;
+}
+
+istream& operator >>(istream& inputStream, Complex& number){
+	char j;
+	inputStream >> number.a >> number.b >> j;
+	return inputStream;
+}
+
+ostream& operator <<(ostream& outputStream, const Complex& number){
+	if(number.b < 0){
+		outputStream << number.a << number.b << "i";
+	}
+	else if(number.b == 0){
+		outputStream << number.a << "+0i";
+	}
+	else{
+		outputStream << number.a << "+" << number.b << "i";
+	}
+	return outputStream;
+}
+	
+Complex& Complex::operator =(const Complex& rightSide){
+	a = rightSide.a;
+	b = rightSide.b;
+}
+	
+Complex& Complex::operator =(const Pairs& rightSide){
+	Pairs::operator =(rightSide);
+}
+
+
+Vector::Vector(): Pairs(){
+}
+
+Vector::Vector(float first, float second): Pairs(first,second){
+}
+
+const float Vector::operator *(const Vector& second) const{
+	return (a * second.a + b * second.b);
+}
+
+const Vector Vector::operator *(const float r) const{
+	return Vector(a*r,b*r);
+}
+
+istream& operator >>(istream& inputStream, Vector& number){
+	char j;
+	inputStream >> j >> number.a >> j >> number.b >>j;
+	return inputStream;
+}
+
+ostream& operator << (ostream& outputStream, const Vector& number){
+	outputStream << "<" << number.a << "," << number.b << ">";
+	return outputStream;
+}
+
+Vector& Vector::operator =(const Pairs& rightSide){
+	Pairs::operator =(rightSide);
+} 
+
+Vector& Vector::operator =(const Vector& rightSide){
+	a = rightSide.a;
+	b = rightSide.b;
+} 
+
+void cActions(){
+	Complex set[26], temp, temp2, temp3;
+	int selection;
+	char location, loc2, loc3, op;
+	cout << "1. Enter a complex number\n"
+	<< "2. Display a complex number\n"
+	<< "3. Perform arithmetic or equality comparisons of complex numbers\n"
+	<< "4. Exit the function\n";
+	cin >> selection;
+	while(selection != 4){
+		while( selection <1 || selection >4){
+			cout <<"Improper selection.\n"
+			<< "1. Enter a complex number\n"
+			<< "2. Display a complex number\n"
+			<< "3. Perform arithmetic or equality comparisons of complex numbers\n"
+			<< "4. Exit the function\n";
+			cin >> selection;
+		}
+		switch(selection){
+			case 1:
+				cout << "Enter a complex number in a+bi or a-bi form: \n";
+				cin >> temp;
+				cout << "Where do you want to store this(enter A-Z): \n";
+				cin >> location;
+				set[convert(location)] = temp;
+				break;
+			case 2:
+				cout <<"Which one do you want to display (enter A-Z): \n";
+				cin >> location;
+				cout << set[convert(location)] << endl;
+				break;
+			case 3:
+				cout << "Enter an operation(+ - * / =): \n";
+				cin >> op;
+				cout << "Enter first number(A-Z): \n";
+				cin >> location;
+				cout << "Enter second number(A-Z): \n";
+				cin >> loc2;
+				cout << "Enter result location(A-Z): \n";
+				cin >> loc3;
+				switch(op){
+					case '+':
+						set[convert(loc3)] = set[convert(location)] + set[convert(loc2)];
+						break;
+					case '-':
+						set[convert(loc3)] = set[convert(location)] - set[convert(loc2)];	
+						break;
+					case '*':
+						set[convert(loc3)] = set[convert(location)] * set[convert(loc2)];
+						break;
+					case '/':
+						set[convert(loc3)] = set[convert(location)] / set[convert(loc2)];
+						break;
+					case '=':
+						if(set[convert(location)] == set[convert(loc2)]){
+							cout << set[convert(location)] << " is equal to " << set[convert(loc2)] << endl;
+						}
+						else{
+							cout << set[convert(location)] << " is not equal to " << set[convert(loc2)] << endl;
+						}
+						break;
+					default:
+						cout << "Error, improper operation.\n";
+						exit(1); 
+				}
+				break;
+			case 4:
+				//exits program
+				break;
+			defaults:
+				cout <<"Error, improper selection";
+		}
+		cout<< "1. Enter a complex number\n"
+		  	<< "2. Display a complex number\n"
+		  	<< "3. Perform arithmetic or equality comparisons of complex numbers\n"
+		 	<< "4. Exit the function\n";
+		 	cin >> selection;
+	}
+	cout << "Goodbye!\n";
+}
+
+int convert(char sel){
+	return toupper(sel)-'A';
+}
+
+void vActions(){
+	Vector set[26], temp;
+	char sel1, sel2, sel3, op;
+	int selection;
+	float scalar;
+	cout << "1. Enter a vector\n"
+	<< "2. Display a vector\n"
+	<< "3. Display a scalar\n"
+	<< "4. Perform arithmetic or equality comparisons of vectors\n"
+	<< "5. Exit the function\n";
+	cin >> selection;
+	while(selection != 5){
+		while( selection < 1 || selection > 5){
+			cout <<"Improper selection.\n"
+			<< "1. Enter a vector\n"
+			<< "2. Display a vector\n"
+			<< "3. Display a scalar\n"
+			<< "4. Perform arithmetic or equality comparisons of vectors\n"
+			<< "5. Exit the function\n";
+			cin >> selection;
+			}
+			switch (selection){
+				case 1:
+					cout << "Enter vector in <a,b> form: \n";
+					cin >> temp;
+					cout << "Where do you want to store this (enter A-Z): \n";
+					cin >> sel1;
+					set[convert(sel1)] = temp;
+					break;
+				case 2:
+					cout << "Which one do you want to display (enter A-Z): \n";
+					cin >> sel1;
+					cout << set[convert(sel1)] << endl;
+					break;
+				case 3:
+					cout << "Scalar = " << scalar << endl;
+					break;
+				case 4:
+					cout << "Enter an operation( + - .(dot product) *(scalar prod) =): \n";
+					cin >> op;
+					switch(op){
+						case '+':
+							cout << "Enter first vector(enter A-Z): \n";
+							cin >> sel1;
+							cout << "Enter second vector(enter A-Z): \n";
+							cin >> sel2;
+							cout << "Enter result location(enter A-Z): \n";
+							cin >> sel3;
+							set[convert(sel3)] = set[convert(sel1)] + set[convert(sel2)];
+							break;
+						case '-':							
+							cout << "Enter first vector(enter A-Z): \n";
+							cin >> sel1;
+							cout << "Enter second vector(enter A-Z): \n";
+							cin >> sel2;
+							cout << "Enter result location(enter A-Z): \n";
+							cin >> sel3;
+							set[convert(sel3)] = set[convert(sel1)] - set[convert(sel2)];
+							break;
+						case '.':
+							cout << "Enter first vector(enter A-Z): \n";
+							cin >> sel1;
+							cout << "Enter second vector(enter A-Z): \n";
+							cin >> sel2;
+							scalar = set[convert(sel1)] * set[convert(sel2)];
+							break;
+						case '*':
+							cout << "Enter vector(enter A-Z): \n";
+							cin >> sel1;
+							cout << "Enter scalar: \n";
+							cin >> scalar;
+							cout << "Enter result location(enter A-Z): \n";
+							cin >> sel2;
+							set[convert(sel2)] = set[convert(sel1)] * scalar;							
+							break;
+						case '=':
+							cout << "Enter first vector(enter A-Z): \n";
+							cin >> sel1;
+							cout << "Enter second vector(enter A-Z): \n";
+							cin >> sel2;
+							if(set[convert(sel1)] == set[convert(sel2)]){
+								cout << set[convert(sel1)] << " is equal to " << set[convert(sel2)] << endl;
+							}
+							else{
+								cout << set[convert(sel1)] << " is not equal to " <<  set[convert(sel2)] << endl;
+							}
+							break;
+						default:
+							cout << "Error. Improper operation.\n";
+							exit(1);
+					}
+					case 5:
+						// exits;
+						break;
+					default:
+						cout << "Error in vector selection.\n";
+						exit(1);						
+			}
+			cout << "1. Enter a vector\n"
+		<< "2. Display a vector\n"
+		<< "3. Display a scalar\n"
+		<< "4. Perform arithmetic or equality comparisons of vectors\n"
+		<< "5. Exit the function\n";
+		cin >> selection;
+	}
+}
