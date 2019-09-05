@@ -1,0 +1,118 @@
+#include <iostream>
+#include <cstdlib>
+#include <ctime>
+using namespace std;
+
+int getCompSelection(int comp);
+int getUserSelection(int user);
+void playResults(int comp, int user, int& win_count_user, int& win_count_comp, int& tie);
+void finalResults(int win_count_user, int win_count_comp, int tie);
+
+
+
+int main()
+{
+	int comp, user, win_count_user = 0, win_count_comp = 0, tie = 0;	
+	char ans;
+	
+	cout << "IT'S TIME TO PLAY ROCK, PAPER, SCISSORS! " << endl;
+	
+	do 
+	{
+		user = getUserSelection(user);
+		comp = getCompSelection(comp);
+		playResults(comp, user, win_count_user, win_count_comp, tie);
+		cout << "Again (y or n)? ";
+		cin >> ans;
+	} while ((ans == 'y') || (ans == 'Y'));
+	
+	finalResults(win_count_user, win_count_comp, tie);
+	
+	
+	return 0;
+}
+
+int getCompSelection(int comp)
+{
+	srand(time(NULL));
+	return 1 + rand() % 3;
+}
+
+int getUserSelection(int user)
+{
+	cout << "What is your play?" << endl << "Rock (1), Paper (2), Scissors (3): ";
+	cin >> user;
+	while ((user < 1) || (user > 3))
+	{
+		cout << "Incorrect input! Rock (1), Paper (2), Scissors (3): ";
+		cin >> user;
+	}
+	return user;
+}
+
+void playResults(int comp, int user, int& win_count_user, int& win_count_comp, int& tie)
+{
+	if (comp == 1)
+	{
+		if (user == 1)
+		{
+			cout << "You played rock and I played rock.\nThe play was a tie.\n";
+			tie++;
+		}
+		else if (user == 2)
+		{
+			cout << "You played paper and I played rock.\nPaper covers rock. You win.\n";
+			win_count_user++;
+		}
+		else
+		{
+			cout << "You played scissors and I played rock.\nRock smashes scissors. I win.\n";
+			win_count_comp++;
+		}
+	}
+	else if (comp == 2)
+	{
+		if (user == 1)
+		{
+			cout << "You played rock and I played paper.\nPaper covers rock. I win.\n";
+			win_count_comp++;
+		}
+		else if (user == 2)
+		{
+			cout << "You played paper and I played paper.\nThe play was a tie.\n";
+			tie++;
+		}
+		else
+		{
+			cout << "You played scissors and I played paper.\nScissors cuts paper. You win.\n";
+			win_count_user++;
+		}
+	}
+	else
+	{
+		if (user == 1)
+		{
+			cout << "You played rock and I played scissors.\nRock smashes scissors. You win.\n";
+			win_count_user++;
+		}
+		else if (user == 2)
+		{
+			cout << "You played paper and I played scissors.\nScissors cuts paper. I win.\n";
+			win_count_comp++;
+		}
+		else
+		{
+			cout << "You played scissors and I played scissors.\nThe play was a tie.\n";
+			tie++;
+		}
+	}
+}
+
+void finalResults(int win_count_user, int win_count_comp, int tie)
+{
+	cout << "Final results of our match: " << endl
+		 << "You won " << win_count_user << " time(s). " << endl
+		 << "I won " << win_count_comp << " time(s). " << endl
+		 << "We tied " << tie << " time(s)." << endl
+		 << "Bye, bye . . . . ."; 
+}
