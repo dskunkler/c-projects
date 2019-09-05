@@ -1,0 +1,293 @@
+#include <iostream>
+#include <cctype>
+using namespace std;
+
+
+class IntSet{
+	public:
+		IntSet();
+		void display()const;
+		const IntSet operator -(IntSet b);
+		const IntSet operator -=(int n);
+		const IntSet operator +=(int n);
+		const IntSet operator +(IntSet b);
+		const IntSet operator *(IntSet b);
+		const bool operator ==(IntSet b);
+		const IntSet operator !();
+		const bool operator <=(IntSet b);
+		friend ostream& operator <<(ostream& outputStream, const IntSet& theSet);
+		
+	private:
+	bool num[100];
+		
+	
+	
+};
+int convert(int sel);
+
+
+int main(){
+	IntSet aSet[10];
+	int selection, charInt, charIntB, charIntC, n;
+	char setChar;
+	while (selection != 10){
+		char cont = 'Y';
+		cout << "1 - Add numbers to a set\n2 - Remove numbers from a set\n3 - Form a union of two sets\n"
+		<< "4 - Form the intersection of two sets\n5 - Form the difference of two sets\n6 - Determine if two sets are equal\n"
+		<<"7 - Form the complement of a set\n8 - Determine if one set is a subset of another set\n9 - Display a set\n10 - Exit\n";
+	cin >> selection;
+	switch(selection){
+		case 1:
+			cout << "Add numbers to which set(A,B,C,D,E,F,G,H,I,J)\n";
+			cin >> setChar;
+			charInt = convert(setChar);
+			while(cont == 'Y'){
+				cout << "Which number would you like to add?\n";
+				cin >> n;
+				aSet[charInt] += n;
+				cout << "Continue? (Y or N)\n";
+				cin >> cont;
+				cont = toupper(cont);
+			}
+			break;
+			
+		case 2:
+			cout << "Subtract numbers from which set(A,B,C,D,E,F,G,H,I,J)\n";
+			cin >> setChar;
+			charInt = convert(setChar);
+			while( cont == 'Y'){
+			cout << "Which number would you like to subtract?\n";
+			cin >> n;
+			aSet[charInt] -= n;
+			cout << "Continue? (Y or N)\n";
+			cin >> cont;
+			cont = toupper(cont);
+			}
+			break;
+			
+		case 3:
+			cout << "Sets union - specify sets to use:\nFirst set:(A,B,C,D,E,F,G,H,I,J)?\n";
+			cin >> setChar;
+			charInt = convert(setChar);
+			cout << "Second set:(A,B,C,D,E,F,G,H,I,J)?\n";
+			cin >> setChar;
+			charIntB = convert(setChar);
+			cout << "Result set:(A,B,C,D,E,F,G,H,I,J)?\n";
+			cin >> setChar;
+			charIntC = convert(setChar);
+			aSet[charIntC] = aSet[charInt] + aSet[charIntB];
+			break;
+			
+		case 4:
+			cout << "Sets intersection - specify sets to use:\nFirst set:(A,B,C,D,E,F,G,H,I,J)?\n";
+			cin >> setChar;
+			charInt = convert(setChar);
+			cout << "Second set:(A,B,C,D,E,F,G,H,I,J)?\n";
+			cin >> setChar;
+			charIntB = convert(setChar);
+			cout << "Result set:(A,B,C,D,E,F,G,H,I,J)?\n";
+			cin >> setChar;
+			charIntC = convert(setChar);
+			aSet[charIntC] = aSet[charInt] * aSet[charIntB];
+			break;
+		case 5:
+			cout << "Sets difference - specify sets to use:\nFirst set:(A,B,C,D,E,F,G,H,I,J)?\n";
+			cin >> setChar;
+			charInt = convert(setChar);
+			cout << "Second set:(A,B,C,D,E,F,G,H,I,J)?\n";
+			cin >> setChar;
+			charIntB = convert(setChar);
+			cout << "Result set:(A,B,C,D,E,F,G,H,I,J)?\n";
+			cin >> setChar;
+			charIntC = convert(setChar);
+			aSet[charIntC] = aSet[charInt] - aSet[charIntB];
+			break;
+			
+		case 6:
+			cout << "Set equality - specify sets to compare:\nFirst set:(A,B,C,D,E,F,G,H,I,J)?\n";
+			cin >> setChar;
+			charInt = convert(setChar);
+			cout << "Second set:(A,B,C,D,E,F,G,H,I,J)?\n";
+			cin >> setChar;
+			charIntB = convert(setChar);
+			if(aSet[charInt] == aSet[charIntB]){
+				cout << "These sets are equal.\n";
+			}
+			else{
+				cout << "These sets are not equal.\n";
+			}
+			break;
+		case 7:
+			cout << "Set complement - specify sets to use:\nFirst set:(A,B,C,D,E,F,G,H,I,J)?\n";
+			cin >> setChar;
+			charInt = convert(setChar);
+			cout << "Result set:(A,B,C,D,E,F,G,H,I,J)?\n";
+			cin >> setChar;
+			charIntB = convert(setChar);
+			aSet[charIntB] = !aSet[charInt];
+			break;
+			
+		case 8:
+			cout << "Subsets - specify sets to compare:\nFirst set:(A,B,C,D,E,F,G,H,I,J)?\n";
+			cin >> setChar;
+			charInt = convert(setChar);
+			cout << "Result set:(A,B,C,D,E,F,G,H,I,J)?\n";
+			cin >> setChar;
+			charIntB = convert(setChar);
+			if(aSet[charInt]<=aSet[charIntB]){
+				cout << "The first set is a subset of the second.\n";
+			}
+			else{
+				cout << "The first set is not a subset of the second.\n";
+			}
+			break;
+		case 9:
+			cout << "Display set:(A,B,C,D,E,F,G,H,I,J)\n";
+			cin >> setChar;
+			charInt = convert(setChar);
+			cout << aSet[charInt];
+			
+			break;
+			
+		case 10:
+			
+			cout << "Goodbye.";
+			break;
+		
+		
+		
+		default:
+			cout << "Error in selection, exiting program";
+			exit(1);
+	}
+	}
+
+	
+	
+	
+	return 0;
+}
+
+
+IntSet::IntSet(){
+	for (int i = 0; i <100; i++){
+		num[i] = false;
+	}
+}
+
+int convert(int sel){
+	sel = toupper(sel);
+	sel = sel - 'A';
+	return sel;
+}
+
+
+const IntSet IntSet::operator +=(int n){
+	if( n < 0 || n > 99){
+		cout << "Error. Invalid integar.\n";
+	}
+	else if( num[n] == true){
+		cout << "That integar is already within the set.\n";
+	}
+	else{
+		num[n] = true;
+	}
+}
+
+const IntSet IntSet::operator -=(int n){
+	if( n < 0 || n > 99){
+		cout << "Error. Invalid integar.\n";
+	}
+	else if(num[n] == false){
+		cout << "That integar is not within the set.\n";
+	}
+	else{
+		num[n] = false;
+	}
+}
+
+const IntSet IntSet::operator +(IntSet b){
+	IntSet c;
+	for (int i = 0; i < 100; i++){
+		if (num[i] == true){
+			c.num[i] = true;
+		}
+		if (b.num[i] == true){
+			c.num[i] = true;
+		}
+	}
+	return c;
+}
+
+const IntSet IntSet::operator *(IntSet b){
+	IntSet c;
+	for(int i = 0; i< 100; i++){
+		if(num[i] == true && b.num[i] == true ){
+			c.num[i] = true;
+		}
+	}
+		return c;
+}
+
+const IntSet IntSet::operator -(IntSet b){
+	IntSet c;
+	for(int i = 0; i< 100; i++){
+		if(num[i] == true && b.num[i] == false){
+			c.num[i] = true;
+		}
+	}
+	return c;
+}
+
+const bool IntSet::operator ==(IntSet b){
+	bool isEqual = true;
+	for(int i = 0; i < 100; i++){
+		
+			if ((num[i] == true && b.num[i] == false) || (num[i] == false && b.num[i]== true)){
+				isEqual = false;
+			}
+	}
+	return isEqual;
+} 
+const IntSet IntSet::operator !(){
+	IntSet b;
+	for(int i = 0; i< 100 ; i++){
+		if (num[i] == true){
+			b.num[i] = false;
+		}
+		else{
+			b.num[i] = true;
+		}
+	}
+	return b;
+}
+
+const bool IntSet::operator <=(IntSet b){
+	bool isSubSet = true;
+	for( int i = 0; i < 100; i++){
+			if (num[i] == true && b.num[i] == false){
+				cout << "If  test\n";
+				isSubSet = false;
+		}
+	}
+	return isSubSet;
+}
+
+ostream& operator << (ostream& outputStream, const IntSet& theSet){
+	bool addComma = false;
+	cout << "{";
+	for(int i = 0; i < 100; i++){
+		
+		if(theSet.num[i] == true && addComma == true){
+			cout << ",";
+			cout << i;
+		}
+		if(theSet.num[i] == true && addComma == false){
+			cout << i;
+			addComma = true;
+		}
+	}
+	cout << "}\n";
+	
+	
+}
