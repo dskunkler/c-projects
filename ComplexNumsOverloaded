@@ -1,0 +1,229 @@
+#include <iostream>
+#include <cstdlib>
+#include <cmath>
+using namespace std;
+
+class Complex{
+	
+	public:
+		Complex();
+		/*void set();*/
+		const Complex operator +(const Complex& second) const;
+		const Complex operator -(const Complex& second) const;
+		const Complex operator *(const Complex& second) const;
+		const Complex operator /(const Complex& second) const;
+		bool operator ==(const Complex& second) const;
+		friend istream& operator >>(istream& inputStream, Complex& number);
+		friend ostream& operator <<(ostream& outputStream, const Complex& number);
+		/*void display() const;*/
+		void convert(const double r);
+		bool equal(Complex comp);
+		void quad(double quadA, double quadB, double quadC);
+		
+		
+	private:
+		double a;
+		double b;
+		
+};
+
+int main(){
+	Complex first, second, third, z, compR1, compR2;
+	int selection = 0;
+	double quadA, quadB, quadC, integral1, r1, r2;
+	char operation;
+	while(selection != 3){
+		cout << "Select an option - (1) Perform complex number arithmatic\n\t\t   (2) Check for quadratic equation solution\n\t\t   (3) Exit\n"; 
+		cin >> selection;
+		if ( selection <1 || selection > 3){
+			cout << "Error. Invalid selection. Aborting program.";
+			exit (1);
+		}
+		switch (selection){
+			case 1:
+	  			cout << "Enter a complex number a+bi: \n";
+	  			cin >> first;
+	
+				cout << "Enter an operation ( +, -, *, /): \n";
+				cin >> operation;
+				switch (operation){
+					case '+':
+						cout << "Enter a complex number a+bi: \n";
+						cin >> second;
+						third = first + second;
+						cout << first << " + " << second << " = " << third << endl;
+						break;
+					case '-':
+						cout << "Enter a complex number a+bi: \n";
+						cin >> second;
+						third = first - second;
+						cout << first << " - " << second << " = " << third << endl;
+						break;
+					case '*':
+						cout << "Enter a complex number a+bi: \n";
+						cin >> second;
+						third = first * second;
+						cout << first << " * "<< second << " = " << third << endl;
+						break;
+					case '/':
+						cout << "Enter a complex number a+bi: \n";
+						cin >> second;
+						third = first/second;
+						cout << first << " / " << second << " = " << third << endl;
+						break;
+					default:
+						cout << "Error. Invalid operation. Aborting program.";
+						exit (1);
+				}
+				break;
+			case 2:
+				cout << "Enter the coefficients of a quadratic equation:\n";
+				cin >> quadA >> quadB >> quadC;
+				if(quadA == 0){
+					cout << "Error, not a quadratic equation.\n";
+					exit(1);
+				}
+				cout << "Enter a complex number a+bi: \n";
+				cin >> z;
+				integral1 = quadB * quadB - 4 * quadA * quadC;
+				if (integral1 >= 0){
+					r1 = (-quadB + sqrt(pow(quadB, 2) - (4 * quadA * quadC )))/(2*quadA);
+					r2 = (-quadB - sqrt(pow(quadB, 2) - (4 * quadA * quadC )))/(2*quadA);
+					compR1.convert(r1);
+					compR2.convert(r2);
+					if(z==compR1 || z == compR2){
+						cout << "The complex number " << z << " is a solution of the quadratic equation.\n";
+					}
+					else{
+					cout << "The complex number " << z << " is not a solution of the quadratic equation.\n";
+				}
+				}
+				else{
+					compR1.quad(quadA, quadB, quadC);
+					if(z == compR1){
+						cout << "The complex number " << z << " is a solution of the quadratic equation.\n";
+					}
+					else{
+						cout << "The complex number " << z << " is not a solution of the quadratic equation.\n";
+					}
+					
+				}
+				
+				break;
+			case 3:
+				cout << "Goodbye!\n";
+				exit(0);
+			default:
+				cout << "Improper selection\n";
+				
+		}
+	}
+	return 0;
+}
+
+Complex::Complex() : a(0) , b(0){}
+
+/*void Complex::set(){
+	char j;
+	cout << "Enter a complex number a+bi: \n";
+	cin >> a >> b >> j;
+}
+
+void Complex::display()const {
+	if(b < 0){
+		cout << a << b << "i";
+	}
+	else if(b == 0){
+		cout << a << "+0i";
+	}
+	else{
+		cout << a << "+" << b << "i";}
+}*/
+
+const Complex Complex::operator +(const Complex& second) const{
+	Complex third;
+	third.a = a + second.a;
+	third.b = b + second.b;
+	return third;
+}
+
+
+const Complex Complex::operator -(const Complex& second) const{
+	Complex third;
+	third.a = a - second.a;
+	third.b = b - second.b;
+	return third;
+}
+
+const Complex Complex::operator *(const Complex& second) const{
+	Complex third;
+	third.a = a * second.a - b * second.b;
+	third.b = a * second.b + b * second.a;
+	return third;
+}
+
+const Complex Complex::operator /(const Complex& second) const{
+	Complex third;
+	third.a = (a * second.a + b * second.b)/(pow(second.a,2) + pow(second.b,2));
+	third.b = (b*second.a - a * second.b)/(pow(second.a,2) + pow(second.b,2));
+	return third;
+}
+
+void Complex::convert(const double r){
+	a = r;
+}
+
+bool Complex::equal(Complex r){
+	bool aSame = false;
+	if ( (a > 0 && r.a > 0) || (a <=0 && r.a <= 0)) {
+		aSame = true;
+	}
+	
+	float adif = abs(a) - abs(r.a);
+	float bdif = abs(b) - abs(r.b);
+	if(adif < .0000001 && bdif < .0000001 && aSame ) {
+		return true;
+	}
+	else{
+		return false;
+	}
+	}
+
+void Complex::quad(double quadA, double quadB, double quadC){
+	a = -quadB / (2 * quadA);
+	b = (sqrt(abs(pow(quadB,2) - (4 * quadA * quadC))))/(2 * quadA);
+	}
+	
+istream& operator >>(istream& inputStream, Complex& number){
+	char j;
+	inputStream >> number.a >> number.b >> j;
+	return inputStream;
+}
+
+ostream& operator <<(ostream& outputStream, const Complex& number){
+	if(number.b < 0){
+		outputStream << number.a << number.b << "i";
+	}
+	else if(number.b == 0){
+		outputStream << number.a << "+0i";
+	}
+	else{
+		outputStream << number.a << "+" << number.b << "i";
+	}
+	return outputStream;
+}
+
+bool Complex::operator ==(const Complex& second) const{
+	bool aSame = false;
+	if ( (a > 0 && second.a > 0) || (a <=0 && second.a <= 0)) {
+		aSame = true;
+	}
+	
+	float adif = abs(a) - abs(second.a);
+	float bdif = abs(b) - abs(second.b);
+	if(adif < .0000001 && bdif < .0000001 && aSame ) {
+		return true;
+	}
+	else{
+		return false;
+	}
