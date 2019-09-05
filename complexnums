@@ -1,0 +1,205 @@
+#include <iostream>
+#include <cstdlib>
+#include <cmath>
+using namespace std;
+
+class Complex{
+	
+	public:
+		Complex();
+		void set();
+		void add(const Complex first, const Complex second);
+		void subtract(const Complex first, const Complex second);
+		void multiply(const Complex first, const Complex second);
+		void divide(const Complex first, const Complex second);
+		void display() const;
+		void convert(const double r);
+		bool equal(Complex comp);
+		void quad(double quadA, double quadB, double quadC);
+		
+		
+	private:
+		double a;
+		double b;
+		
+};
+
+int main(){
+	Complex first, second, third, z, compR1, compR2;
+	int selection = 0;
+	double quadA, quadB, quadC, integar1, r1, r2;
+	char operation;
+	while(selection != 3){
+		cout << "Select an option - (1) Perform complex number arithmatic\n\t\t   (2) Check for quadratic equation solution\n\t\t   (3) Exit\n"; 
+		cin >> selection;
+		if ( selection <1 || selection > 3){
+			cout << "Error. Invalid selection. Aborting program.";
+			exit (1);
+		}
+		switch (selection){
+			case 1:
+				first.set();
+				cout << "Enter an operation ( +, -, *, /): \n";
+				cin >> operation;
+				switch (operation){
+					case '+':
+						second.set();
+						third.add(first, second);
+						first.display();
+						cout << " + ";
+						second.display();
+						cout << " = ";
+						third.display();
+						cout << endl;
+						break;
+					case '-':
+						second.set();
+						third.subtract(first, second);
+						first.display();
+						cout << " - ";
+						second.display();
+						cout << " = ";
+						third.display();
+						cout << endl;
+						break;
+					case '*':
+						second.set();
+						third.multiply(first, second);
+						first.display();
+						cout << " * ";
+						second.display();
+						cout << " = ";
+						third.display();
+						cout << endl;
+						break;
+					case '/':
+						second.set();
+						third.divide(first, second);
+						first.display();
+						cout << " / ";
+						second.display();
+						cout << " = ";
+						third.display();
+						cout << endl;
+						break;
+					default:
+						cout << "Error. Invalid operation. Aborting program.";
+						exit (1);
+				}
+				break;
+			case 2:
+				cout << "Enter the coefficients of a quadratic equation:\n";
+				cin >> quadA >> quadB >> quadC;
+				cout << "Hello\n";
+				if(quadA == 0){
+					cout << "Error. This is not a quadratic equation.\n";
+					exit(1);
+				}
+				z.set();
+				integar1 = quadB * quadB - 4 * quadA * quadC;
+				if (integar1 >= 0){
+					r1 = (-quadB + sqrt(pow(quadB, 2) - (4 * quadA * quadC )))/(2*quadA);
+					r2 = (-quadB - sqrt(pow(quadB, 2) - (4 * quadA * quadC )))/(2*quadA);
+					compR1.convert(r1);
+					compR2.convert(r2);
+					if(z.equal(compR1) || z.equal(compR2)){
+						cout << "The complex number ";
+						z.display();
+						cout << " is a solution of the quadratic equation.\n";
+					}
+					else{
+					cout << "The complex number ";
+					z.display();
+					cout << " is not a solution of the quadratic equation.\n";
+				}
+				}
+				else{
+					compR1.quad(quadA, quadB, quadC);
+					if(z.equal(compR1)){
+						cout << "The complex number ";
+						z.display();
+						cout << " is a solution of the quadratic equation.\n";
+					}
+					else{
+						cout << "The complex number ";
+						z.display();
+						cout << " is not a solution of the quadratic equation.\n";
+					}
+					
+				}
+				
+				break;
+			case 3:
+				cout << "Goodbye!\n";
+				exit(0);
+			default:
+				cout << "Improper selection\n";
+				
+		}
+	}
+	return 0;
+}
+
+Complex::Complex() : a(0) , b(0){}
+
+void Complex::set(){
+	char j;
+	cout << "Enter a complex number a+bi: \n";
+	cin >> a >> b >> j;
+}
+
+void Complex::display()const {
+	if(b < 0){
+		cout << a << b << "i";
+	}
+	else if(b == 0){
+		cout << a << "+0i";
+	}
+	else{
+		cout << a << "+" << b << "i";}
+}
+
+void Complex::add( const Complex first, const Complex second){
+	a = first.a + second.a;
+	b = first.b + second.b;
+}
+
+
+void Complex::subtract(const Complex first, const Complex second){
+	a = first.a - second.a;
+	b = first.b - second.b;
+}
+
+void Complex::multiply(const Complex first, const Complex second){
+	a = first.a * second.a - first.b * second.b;
+	b = first.a * second.b + first.b * second.a;
+}
+
+void Complex::divide(const Complex first, const Complex second){
+	a = (first.a * second.a + first.b * second.b)/(pow(second.a,2) + pow(second.b,2));
+	b = (first.b*second.a - first.a * second.b)/(pow(second.a,2) + pow(second.b,2));
+}
+
+void Complex::convert(const double r){
+	a = r;
+}
+
+bool Complex::equal(Complex r){
+	bool aSame = false;
+	if ((a < 0 && r.a < 0) || (a>= 0 && r.a >= 0)){
+		aSame = true;
+	}
+	float adif = abs(a) - abs(r.a);
+	float bdif = abs(b) - abs(r.b);
+	if(adif < .0000001 && bdif < .0000001 && aSame){
+		return true;
+	}
+	else{
+		return false;
+	}
+	}
+
+void Complex::quad(double quadA, double quadB, double quadC){
+	a = -quadB / (2 * quadA);
+	b = (sqrt(abs(pow(quadB,2) - (4 * quadA * quadC))))/(2 * quadA);
+	}
